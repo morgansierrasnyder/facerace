@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{F5B6A874-CA32-63FD-2EAD-59C6234B6994}") = "Face Race", "Assembly-CSharp.csproj", "{530A477B-E36C-00D9-A753-55E93EC9AE04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{530A477B-E36C-00D9-A753-55E93EC9AE04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530A477B-E36C-00D9-A753-55E93EC9AE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530A477B-E36C-00D9-A753-55E93EC9AE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530A477B-E36C-00D9-A753-55E93EC9AE04}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{A41F8CAE-A73E-C616-CC95-11B396663090}") = "Mesh Modifier", "Assembly-CSharp-firstpass.csproj", "{6F4122A1-16F1-3A90-EAB3-386AD6B326AC}"
+EndProject
+Project("{A41F8CAE-A73E-C616-CC95-11B396663090}") = "Mesh Modifier", "Assembly-CSharp.csproj", "{D6864B77-35A2-0863-86AB-EEA973317664}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F4122A1-16F1-3A90-EAB3-386AD6B326AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F4122A1-16F1-3A90-EAB3-386AD6B326AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F4122A1-16F1-3A90-EAB3-386AD6B326AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F4122A1-16F1-3A90-EAB3-386AD6B326AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6864B77-35A2-0863-86AB-EEA973317664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6864B77-35A2-0863-86AB-EEA973317664}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6864B77-35A2-0863-86AB-EEA973317664}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6864B77-35A2-0863-86AB-EEA973317664}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
