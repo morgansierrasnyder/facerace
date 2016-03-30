@@ -208,7 +208,7 @@ public class CreatePlane : ScriptableWizard
         m.RecalculateBounds();
  
         if (addCollider)
-            plane.AddComponent(typeof(BoxCollider));
+            plane.AddComponent(typeof(MeshCollider));
  
         Selection.activeObject = plane;
     }
