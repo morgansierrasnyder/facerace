@@ -3,38 +3,39 @@ using UnityEngine;
 
 public class DragVertices : MonoBehaviour
 {
-	public float radius = 0.1f;
-	public float pull = 0.25f;
+	public float radius = 0.5f;
+	public float pull = 0.02f;
 	private MeshFilter unappliedMesh;
 	private bool dragging = false;
-
-
-	void Start()
-	{
-		//mesh = GetComponent<MeshFilter>().mesh;
-		//cam = GetComponent<Camera> ();
-	}
+	private Vector3 prevMousePos;
 
 	void Update ()
-	{
+	{ 
+		if (Input.GetMouseButtonDown (0)) {
+			dragging = true;
+			prevMousePos = Input.mousePosition;
+			return;
+		}
+		if (Input.GetMouseButtonUp (0)) {
+			dragging = false;
+			return;
+		}
 		// When no button is pressed we update the mesh collider
 		if (!Input.GetMouseButton (0)) {
 			// Apply collision mesh when we let go of button
 			ApplyMeshCollider ();
 			return;
-		} else {
-			dragging = true;
 		}
 
 		if (dragging) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hit0, hit1;
+			Ray ray0 = Camera.main.ScreenPointToRay (prevMousePos);
+			Ray ray1 = Camera.main.ScreenPointToRay (Input.mousePosition);
 
-			if (Physics.Raycast (ray, out hit)) {
-				Debug.Log ("mouse pos = " + Input.mousePosition);
-				Debug.Log ("hit = " + hit.point);
+			if (Physics.Raycast (ray1, out hit1)) {
+				Physics.Raycast (ray0, out hit0);
 
-				MeshFilter filter = hit.collider.GetComponent<MeshFilter> ();
+				MeshFilter filter = hit0.collider.GetComponent<MeshFilter> ();
 
 				if (filter) {
 					if (filter != unappliedMesh) {
@@ -42,46 +43,39 @@ public class DragVertices : MonoBehaviour
 						unappliedMesh = filter;
 					}
 
-					var localPoint = filter.transform.InverseTransformPoint (hit.point);
-					DeformMesh (filter.mesh, localPoint, pull, radius);
+					Vector3 localPoint0 = filter.transform.InverseTransformPoint (hit0.point);
+					Vector3 localPoint1 = filter.transform.InverseTransformPoint (hit1.point);
+					DragMesh (filter.mesh, localPoint0, localPoint1, pull, radius);
 				}
-
-				// Find the vertices of the triangle that was hit by the raycast
-				/*Vector3[] vertices = mesh.vertices;
-				int[] triangles = mesh.triangles;
-
-				Vector3 p0 = vertices [triangles [hit.triangleIndex * 3 + 0]];
-				Vector3 p1 = vertices [triangles [hit.triangleIndex * 3 + 1]];
-				Vector3 p2 = vertices [triangles [hit.triangleIndex * 3 + 2]];
-
-				Transform hitTransform = hit.collider.transform;
-				p0 = hitTransform.TransformPoint (p0);
-				p1 = hitTransform.TransformPoint (p1);
-				p2 = hitTransform.TransformPoint (p2);*/
-
 			}	
 		}
 	}
 
-	void DeformMesh(Mesh mesh, Vector3 intercept, float pull, float radius)
+	void DragMesh(Mesh mesh, Vector3 intercept0, Vector3 intercept1, float pull, float radius)
 	{
 		Vector3[] vertices = mesh.vertices;
 		Bounds bounds = mesh.bounds;
-		Debug.Log ("intercept = " + intercept);
 
 		for (int i = 0; i < vertices.Length; i++) {
-			float distance = (vertices[i] - intercept).magnitude;
+			// Ignore vertices at the edge of the frame
+			if ((bounds.max.x - vertices[i].x) < 0.05 || (vertices[i].x - bounds.min.x) < 0.05 ||
+				(bounds.max.z - vertices[i].z) < 0.05 || (vertices[i].z - bounds.min.z) < 0.05) {
+				continue;
+			}
+
+			float distance = (vertices[i] - intercept0).magnitude;
 			if (distance > radius) {
 				continue;
 			}
-			vertices [i] += pull * (vertices [i] - intercept);
+
+			float falloff = 1.0f - (distance / radius); // Linear for now!
+			vertices [i] += falloff * pull * (intercept1 - intercept0);
+			// Clamp vertices to mesh's bounding box
 			if (!bounds.Contains (vertices [i])) {
 				vertices[i].x = Mathf.Clamp (vertices [i].x, bounds.min.x, bounds.max.x);
 				vertices[i].z = Mathf.Clamp (vertices [i].z, bounds.min.z, bounds.max.z);
 			}
 		}
-		
-
 		mesh.vertices = vertices;
 	}
 

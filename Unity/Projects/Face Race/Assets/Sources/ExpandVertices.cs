@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ExpandVertices : MonoBehaviour
 {
-	public float radius = 0.1f;
+	public float radius = 0.5f;
 	public float pull = 0.02f;
 	private MeshFilter unappliedMesh;
 
@@ -13,7 +13,7 @@ public class ExpandVertices : MonoBehaviour
 		if (!Input.GetMouseButton (0))
 		{
 			// Apply collision mesh when we let go of button
-			//ApplyMeshCollider();
+			ApplyMeshCollider();
 			return;
 		}
 
@@ -21,9 +21,6 @@ public class ExpandVertices : MonoBehaviour
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
 		if (Physics.Raycast (ray, out hit)) {
-			Debug.Log("mouse pos = " + Input.mousePosition);
-			Debug.Log ("hit = " + hit.point);
-
 			MeshFilter filter = hit.collider.GetComponent<MeshFilter> ();
 
 			if (filter) {
@@ -32,17 +29,16 @@ public class ExpandVertices : MonoBehaviour
 					unappliedMesh = filter;
 				}
 
-				var localPoint = filter.transform.InverseTransformPoint(hit.point);
-				DeformMesh(filter.mesh, localPoint, pull, radius);
+				Vector3 localPoint = filter.transform.InverseTransformPoint(hit.point);
+				ExpandMesh(filter.mesh, localPoint, pull, radius);
 			}
 		}	
 	}
 
-	void DeformMesh(Mesh mesh, Vector3 intercept, float pull, float radius)
+	void ExpandMesh(Mesh mesh, Vector3 intercept, float pull, float radius)
 	{
 		Vector3[] vertices = mesh.vertices;
 		Bounds bounds = mesh.bounds;
-		Debug.Log ("intercept = " + intercept);
 
 		for (int i = 0; i < vertices.Length; i++) {
 			float distance = (vertices[i] - intercept).magnitude;
