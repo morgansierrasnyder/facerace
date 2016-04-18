@@ -48,6 +48,7 @@
      <Compile Include="Assets\ExpandVertices.cs" />
      <Compile Include="Assets\Sources\DragVertices.cs" />
      <Compile Include="Assets\Sources\ExpandVertices.cs" />
+     <Compile Include="Assets\Sources\MorphVertices.cs" />
      <Compile Include="Assets\Sources\MoveVertices.cs" />
  <Reference Include="UnityEngine.Networking">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>

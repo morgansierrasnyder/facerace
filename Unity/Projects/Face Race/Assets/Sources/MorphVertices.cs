@@ -7,7 +7,7 @@ public class MorphVertices : MonoBehaviour
 	public Control control = Control.Move;
 
 	public float radius = 0.5f;
-	public float pull = 0.02f;
+	public float pull = 0.5f;
 
 	private MeshFilter unappliedMesh;
 
@@ -33,7 +33,7 @@ public class MorphVertices : MonoBehaviour
 			return;
 		}
 			
-		RaycastHit hit0, hit1;
+		RaycastHit hit, hit0;
 		Ray prevRay = Camera.main.ScreenPointToRay (prevMousePos);
 		Ray currRay = Camera.main.ScreenPointToRay (Input.mousePosition);
 
@@ -60,6 +60,7 @@ public class MorphVertices : MonoBehaviour
 						break;
 					case Control.Move:
 						DragMesh (filter.mesh, prevPt, currPt, pull, radius);
+						prevMousePos = Input.mousePosition;
 						break;
 				}
 			}
@@ -68,6 +69,26 @@ public class MorphVertices : MonoBehaviour
 
 	void ContractMesh(Mesh mesh, Vector3 intercept, float pull, float radius)
 	{
+		Vector3[] vertices = mesh.vertices;
+		Bounds bounds = mesh.bounds;
+
+		for (int i = 0; i < vertices.Length; i++) {
+			// Ignore vertices at the edge of the frame
+			if ((bounds.max.x - vertices[i].x) < 0.05 || (vertices[i].x - bounds.min.x) < 0.05 ||
+				(bounds.max.z - vertices[i].z) < 0.05 || (vertices[i].z - bounds.min.z) < 0.05) {
+				continue;
+			}
+			float distance = (vertices[i] - intercept).magnitude;
+			if (distance > radius) {
+				continue;
+			}
+			vertices [i] -= (pull / 100f) * (vertices [i] - intercept);
+			if (!bounds.Contains (vertices [i])) {
+				vertices[i].x = Mathf.Clamp (vertices [i].x, bounds.min.x, bounds.max.x);
+				vertices[i].z = Mathf.Clamp (vertices [i].z, bounds.min.z, bounds.max.z);
+			}
+		}
+		mesh.vertices = vertices;
 	}
 
 	void ExpandMesh(Mesh mesh, Vector3 intercept, float pull, float radius)
@@ -76,11 +97,16 @@ public class MorphVertices : MonoBehaviour
 		Bounds bounds = mesh.bounds;
 
 		for (int i = 0; i < vertices.Length; i++) {
+			// Ignore vertices at the edge of the frame
+			if ((bounds.max.x - vertices[i].x) < 0.05 || (vertices[i].x - bounds.min.x) < 0.05 ||
+				(bounds.max.z - vertices[i].z) < 0.05 || (vertices[i].z - bounds.min.z) < 0.05) {
+				continue;
+			}
 			float distance = (vertices[i] - intercept).magnitude;
 			if (distance > radius) {
 				continue;
 			}
-			vertices [i] += pull * (vertices [i] - intercept);
+			vertices [i] += (pull / 100f) * (vertices [i] - intercept);
 			if (!bounds.Contains (vertices [i])) {
 				vertices[i].x = Mathf.Clamp (vertices [i].x, bounds.min.x, bounds.max.x);
 				vertices[i].z = Mathf.Clamp (vertices [i].z, bounds.min.z, bounds.max.z);
@@ -100,14 +126,13 @@ public class MorphVertices : MonoBehaviour
 				(bounds.max.z - vertices[i].z) < 0.05 || (vertices[i].z - bounds.min.z) < 0.05) {
 				continue;
 			}
-
 			float distance = (vertices[i] - intercept0).magnitude;
 			if (distance > radius) {
 				continue;
 			}
-
 			float falloff = 1.0f - (distance / radius); // Linear for now!
 			vertices [i] += falloff * pull * (intercept1 - intercept0);
+
 			// Clamp vertices to mesh's bounding box
 			if (!bounds.Contains (vertices [i])) {
 				vertices[i].x = Mathf.Clamp (vertices [i].x, bounds.min.x, bounds.max.x);
